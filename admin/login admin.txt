@@ -1,0 +1,10 @@
+Toko Online Batik dengan Bootstrap + PHP + MySql
+
+Langkah untuk dapat menggunakan Website ini :
+
+1. Ekstrak file database batiku.sql di phpmyadmin
+2. Website siap digunakan.
+3. Untuk melihat dashbord admin :
+
+Akses ke www.namawebsite.com/admin dengan mengganti nama website sesuai dengan website milik anda.
+Login dengan username : admin@gmail.com | password : admin
