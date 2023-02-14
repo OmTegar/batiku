@@ -1,89 +1,76 @@
-<?php 
-  // require('../config/db.php');
+<?php
+include '../config/db.php';
+
+$UploadDir = 'image/';
+
+if (isset($_POST['upload'])) {
   include '../config/db.php';
 
-  $UploadDir = 'image/';
+  $nama = mysqli_real_escape_string($conn, $_POST['nama']);
+  $keterangan = mysqli_real_escape_string($conn, $_POST['keterangan']);
+  $harga = mysqli_real_escape_string($conn, $_POST['harga']);
+  $kategori = mysqli_real_escape_string($conn, $_POST['kategori']);
+  $ukuran = mysqli_real_escape_string($conn, $_POST['ukuran']);
+  $stock = mysqli_real_escape_string($conn, $_POST['stock']);
 
-  if(isset($_POST['upload'])){
-    // require('../config/db.php');
-    include '../config/db.php';
+  $file = $_FILES['foto'];
+  $fileName = $file['name'];
+  $fileTmpName = $file['tmp_name'];
+  $fileSize = $file['size'];
+  $fileError = $file['error'];
+  $fileType = $file['type'];
 
-    $datenow = Date('Y-m-d h:i:sa');
-    $filename = md5(($_FILES['foto']['name']).$datenow);
-    $tmpName = $_FILES['foto']['tmp_name'];
-    $fileSize = $_FILES['foto']['size'];
-    $fileType = $_FILES['foto']['type'];
-    $filePath = $UploadDir . $filename.'.png';
-    $result = move_uploaded_file($tmpName, $filePath);
-    $nama = $_POST['nama'];
-    $keterangan = $_POST['keterangan'];
-    $harga = $_POST['harga'];
-    $kategori = $_POST['kategori'];
-    $ukuran = $_POST['ukuran'];
-    $stock = $_POST['stock'];
+  $fileExt = explode('.', $fileName);
+  $fileActualExt = strtolower(end($fileExt));
 
-    $query = mysqli_query($conn, "INSERT INTO tabel_produk (nama, gambar, ukuran, keterangan, kategori, harga, stock, path, size) VALUES ('$nama', '$filename', '$ukuran', '$keterangan', '$kategori', '$harga', '$stock', '$filePath', '$fileSize')");
+  $allowed = array('jpg', 'jpeg', 'png', 'gif');
 
-      if (!get_magic_quotes_gpc()) {
-      $filename = addslashes($filename);
-      $filePath = addslashes($filePath);
-    }
+  if (in_array($fileActualExt, $allowed)) {
+    if ($fileError === 0) {
+      if ($fileSize < 1000000) {
+        $fileNameNew = md5(($fileName) . time()) . "." . $fileActualExt;
+        $fileDestination = $UploadDir . $fileNameNew;
+        move_uploaded_file($fileTmpName, $fileDestination);
 
-    if($query){
+        $query = mysqli_query($conn, "INSERT INTO tabel_produk (nama, gambar, ukuran, keterangan, kategori, harga, stock, path, size) VALUES ('$nama', '$fileNameNew', '$ukuran', '$keterangan', '$kategori', '$harga', '$stock', '$fileDestination', '$fileSize')");
+
+        if ($query) {
+          echo '
+                       <script>
+                         alert("Produk ditambahkan");
+                         window.location = "../admin.php"
+                       </script>
+                     ';
+        } else {
+          echo '
+                     <script>
+                         alert("Gagal menambahkan produk. Silahkan coba lagi.");
+                         window.location="../admin.php"
+                     </script>
+                   ';
+        }
+      } else {
+        echo '
+                     <script>
+                         alert("Ukuran file terlalu besar. Ukuran file maksimal 1MB.");
+                         window.location="../admin.php"
+                     </script>
+                   ';
+      }
+    } else {
       echo '
-           <script>
-             alert("Produk ditambahkan");
-             window.location = "../admin.php"
-           </script>
-         ';
-    }else{
-      echo '
-     <script>
-         alert("Format Gambar Tidak Di Dukung (Format Harus .JPG, .JPEG, .PNG, dan .GIF)");
-         window.location="../admin.php"
-       </script>
-     ';
+                 <script>
+                     alert("Ada kesalahan saat mengupload file. Silahkan coba lagi.");
+                     window.location="../admin.php"
+                     </script>
+                     ';
     }
-    mysqli_close($conn);
+  } else {
+    echo '
+                     <script>
+                     alert("Jenis file yang diperbolehkan hanya jpg, jpeg, png, dan gif.");
+                     window.location="../admin.php"
+                     </script>
+                     ';
   }
-
-
-
-?>
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  //     if($query){
-  //       echo '
-  //         <script>
-  //           alert("Produk ditambahkan");
-  //           window.location = "../admin.php"
-  //         </script>
-  //       ';
-  //     }
-  //   }
-  // } else {
-  //   echo '
-  //     <script>
-  //       alert("Format Gambar Tidak Di Dukung (Format Harus .JPG, .JPEG, .PNG, dan .GIF)");
-  //       window.location="../admin.php"
-  //     </script>
-  //   ';
-  // }
-
-
+}
