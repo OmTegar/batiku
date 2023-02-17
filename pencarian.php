@@ -45,12 +45,12 @@
           echo '
             <li>
         <a href="#'.$arrayCari['idProduk'].'">
-          <img src="../../../admin/proses/'.$arrayCari['path'].'" alt="'.$arrayCari['nama'].'">
+          <img src="/admin/proses/'.$arrayCari['path'].'" alt="'.$arrayCari['nama'].'">
           <span></span>
         </a>
         <div class="overlay" id="'.$arrayCari['idProduk'].'">
           <a href="#" class="close"><i class="glyphicon glyphicon-remove"></i></a>
-          <img src="../../../admin/proses/'.$arrayCari['path'].'">
+          <img src="/admin/proses/'.$arrayCari['path'].'">
           <div class="keterangan">
             <div class="container">
               <h4><strong>'.$arrayCari['nama'].'</strong></h4>
