@@ -598,11 +598,24 @@ if (!isset($_SESSION['idAdmin'])) {
                     <?php
                     $idUser = $_SESSION['idUser'];
                     // require('config/db.php');
-                    include 'config/db.php';
-                    // $conn = mysqli_connect('localhost', 'root', '', 'batiku');
+                    include 'config/db.php';                    // $conn = mysqli_connect('localhost', 'root', '', 'batiku');
                     $queryBarang = mysqli_query($conn, "SELECT * FROM tabel_transaksi WHERE idUser='$idUser'");
 
                     $jumlah = mysqli_num_rows($queryBarang);
+
+                    if ($jumlah == 0) {
+                      echo '
+                            <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td style="width: 50vw">Belum Ada Transaksi</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                          </tr>
+                        ';
+                    } else {
                       while ($arrayBarang = mysqli_fetch_array($queryBarang)) {
                         $queryUser = mysqli_query($conn, "SELECT namaUser, alamat FROM tabel_user WHERE idUser='$idUser'");
                         $arrayUser = mysqli_fetch_array($queryUser);
@@ -616,8 +629,10 @@ if (!isset($_SESSION['idAdmin'])) {
                             <td class="id-transaksi text-center">' . $arrayBarang['tanggal'] . '</td>
                             <td class="hapus"><a href="proses/hapusTransaksi.php?idTransaksi=' . $arrayBarang['idTransaksi'] . '"><button type="button" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i></button></a></td>
                           </tr>
+
                           ';
                       }
+                    }
                     ?>
                   </tbody>
                 </table>
@@ -677,7 +692,7 @@ if (!isset($_SESSION['idAdmin'])) {
                   </thead>
                   <tbody>
                     <?php
-                    // require('config/db.php');
+                    require('config/db.php');
                     include 'config/db.php';
                     // $conn = mysqli_connect('localhost', 'root', '', 'batiku');
                     $queryAdmin = mysqli_query($conn, "SELECT * FROM tabel_admin");
